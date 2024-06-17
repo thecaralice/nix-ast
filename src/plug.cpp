@@ -1,24 +1,8 @@
 #include <nix/config.h>
 
-#include <nix/canon-path.hh>
 #include <nix/command.hh>
-#include <nix/error.hh>
 #include <nix/eval-settings.hh>
 #include <nix/eval.hh>
-#include <nix/nixexpr.hh>
-#include <nix/ref.hh>
-#include <nix/source-path.hh>
-#include <nix/store-api.hh>
-#include <nix/symbol-table.hh>
-
-#include <functional>
-#include <nlohmann/json.hpp>
-#include <sstream>
-#include <string_view>
-#include <type_traits>
-#include <typeinfo>
-#include <utility>
-#include <variant>
 
 using namespace nix;
 using json = nlohmann::json;
