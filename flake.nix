@@ -2,13 +2,29 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
     flake-parts.url = "github:hercules-ci/flake-parts";
+    nix-github-actions = {
+      url = "github:nix-community/nix-github-actions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { flake-parts, nixpkgs, ... }@inputs:
+    {
+      self,
+      flake-parts,
+      nixpkgs,
+      nix-github-actions,
+      ...
+    }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [ ];
       systems = nixpkgs.lib.platforms.all;
+      flake.githubActions = nix-github-actions.lib.mkGithubMatrix {
+        checks = nixpkgs.lib.getAttrs [
+          "x86_64-linux"
+          "x86_64-darwin"
+        ] self.packages;
+      };
       perSystem =
         {
           pkgs,
