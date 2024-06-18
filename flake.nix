@@ -37,19 +37,7 @@
           nix = pkgs.nixVersions.nix_2_20;
         in
         {
-          packages.default = pkgs.stdenv.mkDerivation {
-            name = "nix-ast";
-            src = ./.;
-            buildInputs = [
-              nix.dev
-              pkgs.boost.dev
-            ];
-            nativeBuildInputs = [
-              pkgs.meson
-              pkgs.ninja
-              pkgs.pkg-config
-            ];
-          };
+          packages.default = pkgs.callPackage ./package.nix { inherit nix; };
 
           devShells.default = pkgs.mkShell {
             packages = [
