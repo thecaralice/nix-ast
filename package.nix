@@ -7,7 +7,8 @@
   pkg-config,
 }:
 stdenv.mkDerivation {
-  name = "nix-ast";
+  pname = "nix-ast";
+  version = "0.1.0";
   src = ./.;
   buildInputs = [
     nix.dev
