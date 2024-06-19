@@ -48,7 +48,7 @@
         mapAttrValues (lib.flip mapAttrValues nv) {
           devShells =
             nix:
-            pkgs.mkShell {
+            pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
               packages =
                 (with pkgs; [
                   boost.dev

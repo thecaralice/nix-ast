@@ -1,12 +1,12 @@
 {
-  stdenv,
+  clangStdenv,
   nix,
   boost,
   meson,
   ninja,
   pkg-config,
 }:
-stdenv.mkDerivation {
+clangStdenv.mkDerivation {
   pname = "nix-ast";
   version = "0.1.0";
   src = ./.;
