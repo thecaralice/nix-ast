@@ -34,21 +34,32 @@
           ...
         }:
         let
-          nix = pkgs.nixVersions.nix_2_20;
-        in
-        {
-          packages.default = pkgs.callPackage ./package.nix { inherit nix; };
-
-          devShells.default = pkgs.mkShell {
-            packages = [
-              nix.dev
-              pkgs.boost.dev
-              pkgs.meson
-              pkgs.ninja
-              pkgs.pkg-config
-              pkgs.clang-tools
-            ];
+          inherit (lib) flip const;
+          compose = flip lib.pipe;
+          mapAttrValues = compose [
+            const
+            lib.mapAttrs
+          ];
+          nv = {
+            inherit (pkgs.nixVersions) nix_2_18 nix_2_19 nix_2_20;
+            default = pkgs.nix;
           };
+        in
+        mapAttrValues (lib.flip mapAttrValues nv) {
+          devShells =
+            nix:
+            pkgs.mkShell {
+              packages =
+                (with pkgs; [
+                  boost.dev
+                  meson
+                  ninja
+                  pkg-config
+                  clang-tools
+                ])
+                ++ [ nix.dev ];
+            };
+          packages = nix: pkgs.callPackage ./package.nix { inherit nix; };
         };
     };
 }

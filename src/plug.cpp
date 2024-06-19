@@ -117,6 +117,10 @@ constexpr inline const E &WithSymbols<E>::operator*() const {
 
 template <typename E> void to_json(json &j, const WithSymbols<E *> &expr);
 
+template <typename E>
+std::void_t<decltype(to_json(std::declval<json &>(), std::declval<const E>()))>
+to_json(json &j, const WithSymbols<E> &expr);
+
 template <typename T> void to_json(json &j, const WithSymbols<const T> &expr) {
   return to_json(j, expr.map([](auto &&x) -> WithSymbols<T> { return x; }));
 }
@@ -442,8 +446,7 @@ struct CmdAst : SourceExprCommand {
           eval_state->rootPath(CanonPath::fromCwd(this->file.value())));
     } else {
       expr = eval_state->parseExprFromString(
-          this->expr.value(),
-          eval_state->rootPath(CanonPath::fromCwd(getCommandBaseDir())));
+          this->expr.value(), eval_state->rootPath(CanonPath::fromCwd()));
     }
     json j = WithSymbols<Expr *>{.value = expr, .table = eval_state->symbols};
     std::cout << j << std::endl;
