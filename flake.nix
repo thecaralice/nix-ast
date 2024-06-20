@@ -55,7 +55,7 @@
                   meson
                   ninja
                   pkg-config
-                  clang-tools
+                  llvmPackages_18.clang-tools
                 ])
                 ++ [ nix.dev ];
             };
