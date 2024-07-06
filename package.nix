@@ -5,6 +5,7 @@
   meson,
   ninja,
   pkg-config,
+  jq,
 }:
 clangStdenv.mkDerivation {
   pname = "nix-ast";
@@ -19,4 +20,6 @@ clangStdenv.mkDerivation {
     ninja
     pkg-config
   ];
+  checkInputs = [ jq ];
+  doCheck = true;
 }

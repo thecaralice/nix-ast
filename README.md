@@ -15,7 +15,7 @@ This repo is a flake providing a single package output.
 ```sh
 $ nix build github:thecaralice/nix-ast#default
 $ nix --plugin-files ./result/lib/libnix-ast.dylib ast --expr 'let name = "world"; in "Hello, ${name}"'
-{"attrs":{"attrs":{"name":{"inherited":false,"value":{"kind":"String","value":"world"}}},"dynamic":[],"kind":"Attrs","recursive":false},"body":{"forceString":true,"kind":"ConcatStrings","strings":[{"kind":"String","value":"Hello, "},{"displacement":0,"from_with":null,"kind":"Var","level":0,"name":"name"}]},"kind":"Let"}
+{"attrs":{"attrs":{"name":{"inherited":false,"value":{"kind":"String","value":"world"}}},"dynamic":[],"kind":"Attrs","recursive":false},"body":{"forceString":true,"kind":"ConcatStrings","strings":[{"kind":"String","value":"Hello, "},{"displacement":0,"from_with":false,"kind":"Var","level":0,"name":"name"}]},"kind":"Let"}
 ```
 
 ### NixOS/nix-darwin/Home Manager configuration
