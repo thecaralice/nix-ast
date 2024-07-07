@@ -44,11 +44,12 @@
             inherit (pkgs.nixVersions) nix_2_18 nix_2_19 nix_2_20;
             default = pkgs.nix;
           };
+          llvm = pkgs.llvmPackages_18;
         in
         mapAttrValues (lib.flip mapAttrValues nv) {
           devShells =
             nix:
-            pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
+            pkgs.mkShell.override { inherit (llvm) stdenv; } {
               packages =
                 (with pkgs; [
                   boost.dev
