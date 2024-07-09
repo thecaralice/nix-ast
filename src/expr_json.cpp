@@ -15,14 +15,22 @@ using json = nlohmann::json;
 void to_json(json& j, const nix::ExprInt& expr) {
 	j = {
 		{ "kind", "Int" },
+#if NIX_VERSION_MINOR < 22
 		{ "value", expr.v.integer },
+#else
+		{ "value", expr.v.integer() },
+#endif
 	};
 }
 
 void to_json(json& j, const nix::ExprFloat& expr) {
 	j = {
 		{ "kind", "Float" },
+#if NIX_VERSION_MINOR < 22
 		{ "value", expr.v.fpoint },
+#else
+		{ "value", expr.v.fpoint() },
+#endif
 	};
 }
 

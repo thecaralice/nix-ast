@@ -46,6 +46,7 @@
               nix_2_19
               nix_2_20
               nix_2_21
+              nix_2_22
               ;
             default = pkgs.nix;
           };
