@@ -34,7 +34,7 @@ foreach test: ['readme', 'inherit']
     output: f'test-@test@.out.json'
   )
   test(
-    'test-@test',
+    f'test-@test@',
     jq,
     args: [
       '--slurp',
