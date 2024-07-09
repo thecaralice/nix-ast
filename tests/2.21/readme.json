@@ -3,6 +3,7 @@
     "attrs": {
       "dynamic": [],
       "inherited": [],
+      "inherited_from": [],
       "plain": {
         "name": {
           "kind": "String",

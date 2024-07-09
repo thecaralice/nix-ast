@@ -1,5 +1,5 @@
 {
-  clangStdenv,
+  stdenv,
   nix,
   boost,
   meson,
@@ -7,7 +7,7 @@
   pkg-config,
   jq,
 }:
-clangStdenv.mkDerivation {
+stdenv.mkDerivation {
   pname = "nix-ast";
   version = "0.1.0";
   src = ./.;
@@ -20,6 +20,6 @@ clangStdenv.mkDerivation {
     ninja
     pkg-config
   ];
-  checkInputs = [ jq ];
+  nativeCheckInputs = [ jq ];
   doCheck = true;
 }

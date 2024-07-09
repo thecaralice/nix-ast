@@ -97,5 +97,6 @@ void to_json(json& j, const WithSymbols<const nix::ExprOpUpdate&>& expr);
 void to_json(json& j, const WithSymbols<const nix::ExprOpConcatLists&>& expr);
 
 template <typename E> void to_json(json& j, const WithSymbols<E*>& expr);
+template <> void to_json(json& j, const WithSymbols<nix::Expr*>& expr);
 
 template <std::ranges::range S> void to_json(json& j, const WithSymbols<S>& range);

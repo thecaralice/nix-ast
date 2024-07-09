@@ -1,6 +1,8 @@
 #include <nix/nixexpr.hh>
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <ranges>
+#include <stdexcept>
 #include <utility>
 
 #include "expr_json.hpp"
@@ -69,13 +71,6 @@ void to_json(json& j, const WithSymbols<const nix::AttrName&>& attr) {
 	}
 }
 
-void to_json(json& j, const WithSymbols<const nix::ExprAttrs::AttrDef&>& expr) {
-	j = {
-		{ "inherited", expr->inherited },
-		{ "value", expr.map([](auto&& x) { return x.e; }) },
-	};
-}
-
 void to_json(json& j, const WithSymbols<const nix::ExprSelect&>& expr) {
 	j = {
 		{ "kind", "Select" },
@@ -101,11 +96,62 @@ void to_json(json& j, const WithSymbols<const nix::ExprAttrs::DynamicAttrDef&>& 
 }
 
 void to_json(json& j, const WithSymbols<const nix::ExprAttrs&>& expr) {
+	auto attrs = expr.map([](auto&& x) { return x.attrs; });
+#if NIX_VERSION_MINOR < 21
+	std::map<WithSymbols<nix::Symbol>, WithSymbols<nix::Expr*>> plain;
+	std::set<WithSymbols<nix::Symbol>> inherited;
+	for (auto&& x: lift_range(attrs)) {
+		auto&& [name, attr] = lift_pair(x);
+		if (attr->inherited) {
+			inherited.emplace(name);
+		} else {
+			plain.emplace(name, attr.map([](auto&& y) { return y.e; }));
+		}
+	}
+	json attrs_json = {
+		{ "plain", plain },
+		{ "inherited", inherited },
+		{ "dynamic", expr.map([](auto&& x) { return x.dynamicAttrs; }) },
+	};
+#else
+	std::map<WithSymbols<nix::Symbol>, WithSymbols<nix::Expr*>> plain;
+	std::set<WithSymbols<nix::Symbol>> inherited;
+	std::map<nix::ExprInheritFrom*, std::set<WithSymbols<nix::Symbol>>> inherited_from;
+	for (auto&& x: lift_range(attrs)) {
+		auto&& [name, attr] = lift_pair(x);
+		using Kind = nix::ExprAttrs::AttrDef::Kind;
+		switch (attr->kind) {
+		case Kind::Plain: plain.emplace(name, attr.map([](auto&& y) { return y.e; })); break;
+		case Kind::Inherited: inherited.emplace(name); break;
+		case Kind::InheritedFrom:
+			if (!expr->inheritFromExprs) {
+				throw std::runtime_error("got a Kind::InheritedFrom, but inheritFromExprs is empty");
+			}
+			inherited_from
+				.try_emplace(dynamic_cast<nix::ExprInheritFrom*>(dynamic_cast<nix::ExprSelect*>(attr->e)->e)
+				)
+				.first->second.emplace(name);
+			break;
+		}
+	}
+	auto inherited_from_view
+		= std::ranges::views::transform(inherited_from, [&expr](auto&& p) -> json {
+				return {
+					{ "from", expr.map([&p](auto&& x) { return (*x.inheritFromExprs)[p.first->displ]; }) },
+					{ "attrs", p.second },
+				};
+			});
+	json attrs_json = {
+		{ "plain", plain },
+		{ "inherited", inherited },
+		{ "inherited_from", json::array_t(inherited_from_view.begin(), inherited_from_view.end()) },
+		{ "dynamic", expr.map([](auto&& x) { return x.dynamicAttrs; }) },
+	};
+#endif
 	j = {
 		{ "kind", "Attrs" },
 		{ "recursive", expr->recursive },
-		{ "attrs", expr.map([](auto&& x) { return x.attrs; }) },
-		{ "dynamic", expr.map([](auto&& x) { return x.dynamicAttrs; }) },
+		{ "attrs", attrs_json },
 	};
 }
 
@@ -151,7 +197,7 @@ void to_json(json& j, const WithSymbols<const nix::ExprCall&>& expr) {
 void to_json(json& j, const WithSymbols<const nix::ExprLet&>& expr) {
 	j = {
 		{ "kind", "Let" },
-		{ "attrs", expr.map([](auto&& x) { return *x.attrs; }) },
+		{ "attrs", expr.map([](auto&& x) { return x.attrs; }) },
 		{ "body", expr.map([](auto&& x) { return x.body; }) },
 	};
 }
@@ -269,16 +315,18 @@ template <typename E> void to_json(json& j, const WithSymbols<E*>& expr) {
 	if (!*expr) {
 		return;
 	}
-	j = expr.map([](auto&& x) { return *x; });
+	// j = expr.map([](auto&& x) -> E& { return *x; });
+	j = expr.template replace<const E&>(**expr);
 }
 
 template <typename... V> void to_json(json& j, const WithSymbols<rwcv<V...>>& expr) {
-	j = std::visit(
-		[&expr](auto&& x) -> json {
+	std::visit(
+		[&j, &expr](auto& x) {
 			using T = std::decay_t<decltype(x)>;
 			using U = std::remove_const_t<std::remove_reference_t<typename T::type>>;
 			static_assert(std::is_same_v<T, std::reference_wrapper<const U>>);
-			return expr.template replace<U>(x);
+			WithSymbols<const U&> r(x, expr.table);
+			to_json(j, r);
 		},
 		*expr
 	);

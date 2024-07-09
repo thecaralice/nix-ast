@@ -13,6 +13,8 @@ template <typename E> struct WithSymbols {
 	E value;
 	const SymbolTable& table;
 
+	WithSymbols(E value, const SymbolTable& table): value(value), table(table) {}
+
 	// fmap aka <$>
 	template <typename F> constexpr inline auto map(F func) const {
 		return this->replace(func(this->value));
@@ -20,7 +22,7 @@ template <typename E> struct WithSymbols {
 
 	// $>
 	template <typename B> constexpr inline auto replace(B value) const {
-		return WithSymbols<B> { .value = value, .table = this->table };
+		return WithSymbols<B>(value, this->table);
 	}
 
 	constexpr inline const E* operator->() const {
@@ -42,6 +44,8 @@ template <typename E> struct WithSymbols<const E&> {
 
 	WithSymbols(const WithSymbols<E>& val): value(val.value), table(val.table) {}
 
+	WithSymbols(const E& value, const SymbolTable& table): value(value), table(table) {}
+
 	// fmap aka <$>
 	template <typename F> constexpr inline auto map(F func) const {
 		return this->replace(func(this->value));
@@ -49,7 +53,7 @@ template <typename E> struct WithSymbols<const E&> {
 
 	// $>
 	template <typename B> constexpr inline auto replace(B value) const {
-		return WithSymbols<B> { .value = value, .table = this->table };
+		return WithSymbols<B>(value, this->table);
 	}
 
 	constexpr inline const E* operator->() const {
@@ -64,7 +68,7 @@ template <typename E> struct WithSymbols<const E&> {
 		return this->value;
 	}
 
-	constexpr inline operator E&() const {
+	constexpr inline operator const E&() const {
 		return this->value;
 	}
 };
@@ -72,6 +76,8 @@ template <typename E> struct WithSymbols<const E&> {
 template <> struct WithSymbols<Symbol> {
 	Symbol value;
 	const SymbolTable& table;
+
+	WithSymbols(Symbol value, const SymbolTable& table): value(value), table(table) {}
 
 	inline std::optional<std::string_view> resolve() const {
 		return this->value ? std::make_optional(this->table[this->value]) : std::nullopt;
@@ -84,6 +90,10 @@ template <> struct WithSymbols<Symbol> {
 	inline operator std::string() const {
 		std::string_view str = *this;
 		return std::string(str);
+	}
+
+	constexpr inline auto operator<=>(const WithSymbols<Symbol>& rhs) const {
+		return this->resolve() <=> rhs.resolve();
 	}
 };
 

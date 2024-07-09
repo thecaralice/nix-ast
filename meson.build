@@ -12,7 +12,7 @@ ver = '@0@.@1@'.format(nix_version[0], nix_version[1])
 nix = find_program('nix')
 jq = find_program('jq')
 test_jq = files('tests/test.jq')[0]
-foreach test: ['readme']
+foreach test: ['readme', 'inherit']
   out = custom_target(
     f'test-@test@-out',
     command: [

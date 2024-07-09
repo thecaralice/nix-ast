@@ -6,6 +6,7 @@
 
 #include "expr_json.hpp"
 #include "functor.hpp"
+#include "polyfill.hpp"
 
 using json = nlohmann::json;
 
@@ -37,16 +38,11 @@ struct CmdAst: nix::SourceExprCommand {
 		}
 		nix::Expr* expr;
 		if (this->file) {
-			expr = eval_state->parseExprFromFile(
-				eval_state->rootPath(nix::CanonPath::fromCwd(this->file.value()))
-			);
+			expr = eval_state->parseExprFromFile(resolve_path(*eval_state, this->file.value()));
 		} else {
-			expr = eval_state->parseExprFromString(
-				this->expr.value(),
-				eval_state->rootPath(nix::CanonPath::fromCwd())
-			);
+			expr = eval_state->parseExprFromString(this->expr.value(), resolve_path(*eval_state, "."));
 		}
-		json j = WithSymbols<nix::Expr*> { .value = expr, .table = eval_state->symbols };
+		json j = WithSymbols<nix::Expr*>(expr, eval_state->symbols);
 		std::cout << j << std::endl;
 	}
 };

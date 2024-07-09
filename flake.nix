@@ -41,7 +41,12 @@
             lib.mapAttrs
           ];
           nv = {
-            inherit (pkgs.nixVersions) nix_2_18 nix_2_19 nix_2_20;
+            inherit (pkgs.nixVersions)
+              nix_2_18
+              nix_2_19
+              nix_2_20
+              nix_2_21
+              ;
             default = pkgs.nix;
           };
           llvm = pkgs.llvmPackages_18;
@@ -56,11 +61,16 @@
                   meson
                   ninja
                   pkg-config
-                  llvmPackages_18.clang-tools
                 ])
+                ++ (with llvm; [ clang-tools ])
                 ++ [ nix.dev ];
             };
-          packages = nix: pkgs.callPackage ./package.nix { inherit nix; };
+          packages =
+            nix:
+            pkgs.callPackage ./package.nix {
+              inherit nix;
+              inherit (llvm) stdenv;
+            };
         };
     };
 }

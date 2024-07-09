@@ -1,15 +1,15 @@
 {
   "attrs": {
     "attrs": {
-      "name": {
-        "inherited": false,
-        "value": {
+      "inherited": [],
+      "dynamic": [],
+      "plain": {
+        "name": {
           "kind": "String",
           "value": "world"
         }
       }
     },
-    "dynamic": [],
     "kind": "Attrs",
     "recursive": false
   },
