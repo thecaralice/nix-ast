@@ -9,8 +9,8 @@ def cmp:
 		else
 			($fst | keys | sort) as $fst_keys
 			| ($snd | keys | sort) as $snd_keys
-			| .fst += $fst_keys - $snd_keys
-			| .snd += $snd_keys - $fst_keys
+			| .fst += (($fst_keys - $snd_keys) | map([.]))
+			| .snd += (($snd_keys - $fst_keys) | map([.]))
 			| ($fst_keys - ($fst_keys - $snd_keys)) as $keys
 			| reduce (
 				$keys 
