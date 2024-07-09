@@ -1,34 +1,34 @@
 {
-  "attrs": {
-    "attrs": {
-      "inherited": [],
-      "dynamic": [],
-      "plain": {
-        "name": {
-          "kind": "String",
-          "value": "world"
-        }
-      }
-    },
-    "kind": "Attrs",
-    "recursive": false
-  },
-  "body": {
-    "forceString": true,
-    "kind": "ConcatStrings",
-    "strings": [
-      {
-        "kind": "String",
-        "value": "Hello, "
-      },
-      {
-        "displacement": 0,
-        "from_with": false,
-        "kind": "Var",
-        "level": 0,
-        "name": "name"
-      }
-    ]
-  },
-  "kind": "Let"
+	"attrs": {
+		"attrs": {
+			"inherited": [],
+			"dynamic": [],
+			"plain": {
+				"name": {
+					"kind": "String",
+					"value": "world"
+				}
+			}
+		},
+		"kind": "Attrs",
+		"recursive": false
+	},
+	"body": {
+		"forceString": true,
+		"kind": "ConcatStrings",
+		"strings": [
+			{
+				"kind": "String",
+				"value": "Hello, "
+			},
+			{
+				"displacement": 0,
+				"from_with": false,
+				"kind": "Var",
+				"level": 0,
+				"name": "name"
+			}
+		]
+	},
+	"kind": "Let"
 }

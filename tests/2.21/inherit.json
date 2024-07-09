@@ -1,58 +1,58 @@
 {
-  "attrs": {
-    "attrs": {
-      "dynamic": [],
-      "inherited": [],
-      "inherited_from": [],
-      "plain": {
-        "bar": {
-          "attrs": {
-            "dynamic": [],
-            "inherited": [],
-            "inherited_from": [],
-            "plain": {
-              "baz": {
-                "kind": "String",
-                "value": "world"
-              }
-            }
-          },
-          "kind": "Attrs",
-          "recursive": false
-        },
-        "foo": {
-          "kind": "String",
-          "value": "hello"
-        }
-      }
-    },
-    "kind": "Attrs",
-    "recursive": false
-  },
-  "body": {
-    "attrs": {
-      "dynamic": [],
-      "inherited": [
-        "foo"
-      ],
-      "inherited_from": [
-        {
-          "attrs": [
-            "baz"
-          ],
-          "from": {
-            "displacement": 1,
-            "from_with": null,
-            "kind": "Var",
-            "level": 0,
-            "name": "bar"
-          }
-        }
-      ],
-      "plain": {}
-    },
-    "kind": "Attrs",
-    "recursive": false
-  },
-  "kind": "Let"
+	"attrs": {
+		"attrs": {
+			"dynamic": [],
+			"inherited": [],
+			"inherited_from": [],
+			"plain": {
+				"bar": {
+					"attrs": {
+						"dynamic": [],
+						"inherited": [],
+						"inherited_from": [],
+						"plain": {
+							"baz": {
+								"kind": "String",
+								"value": "world"
+							}
+						}
+					},
+					"kind": "Attrs",
+					"recursive": false
+				},
+				"foo": {
+					"kind": "String",
+					"value": "hello"
+				}
+			}
+		},
+		"kind": "Attrs",
+		"recursive": false
+	},
+	"body": {
+		"attrs": {
+			"dynamic": [],
+			"inherited": [
+				"foo"
+			],
+			"inherited_from": [
+				{
+					"attrs": [
+						"baz"
+					],
+					"from": {
+						"displacement": 1,
+						"from_with": null,
+						"kind": "Var",
+						"level": 0,
+						"name": "bar"
+					}
+				}
+			],
+			"plain": {}
+		},
+		"kind": "Attrs",
+		"recursive": false
+	},
+	"kind": "Let"
 }

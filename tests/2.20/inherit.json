@@ -1,57 +1,57 @@
 {
-  "attrs": {
-    "attrs": {
-      "dynamic": [],
-      "inherited": [],
-      "plain": {
-        "bar": {
-          "attrs": {
-            "dynamic": [],
-            "inherited": [],
-            "plain": {
-              "baz": {
-                "kind": "String",
-                "value": "world"
-              }
-            }
-          },
-          "kind": "Attrs",
-          "recursive": false
-        },
-        "foo": {
-          "kind": "String",
-          "value": "hello"
-        }
-      }
-    },
-    "kind": "Attrs",
-    "recursive": false
-  },
-  "body": {
-    "attrs": {
-      "dynamic": [],
-      "inherited": [
-        "foo"
-      ],
-      "plain": {
-        "baz": {
-          "default": null,
-          "kind": "Select",
-          "path": [
-            "baz"
-          ],
-          "from": {
-            "displacement": 1,
-            "from_with": null,
-            "kind": "Var",
-            "level": 0,
-            "name": "bar"
-          }
-        }
-      }
-    },
-    "kind": "Attrs",
-    "recursive": false
-  },
-  "kind": "Let"
+	"attrs": {
+		"attrs": {
+			"dynamic": [],
+			"inherited": [],
+			"plain": {
+				"bar": {
+					"attrs": {
+						"dynamic": [],
+						"inherited": [],
+						"plain": {
+							"baz": {
+								"kind": "String",
+								"value": "world"
+							}
+						}
+					},
+					"kind": "Attrs",
+					"recursive": false
+				},
+				"foo": {
+					"kind": "String",
+					"value": "hello"
+				}
+			}
+		},
+		"kind": "Attrs",
+		"recursive": false
+	},
+	"body": {
+		"attrs": {
+			"dynamic": [],
+			"inherited": [
+				"foo"
+			],
+			"plain": {
+				"baz": {
+					"default": null,
+					"kind": "Select",
+					"path": [
+						"baz"
+					],
+					"from": {
+						"displacement": 1,
+						"from_with": null,
+						"kind": "Var",
+						"level": 0,
+						"name": "bar"
+					}
+				}
+			}
+		},
+		"kind": "Attrs",
+		"recursive": false
+	},
+	"kind": "Let"
 }

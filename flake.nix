@@ -52,26 +52,34 @@
           };
           llvm = pkgs.llvmPackages_18;
         in
-        mapAttrValues (lib.flip mapAttrValues nv) {
-          devShells =
-            nix:
-            pkgs.mkShell.override { inherit (llvm) stdenv; } {
-              packages =
-                (with pkgs; [
-                  boost.dev
-                  meson
-                  ninja
-                  pkg-config
-                ])
-                ++ (with llvm; [ clang-tools ])
-                ++ [ nix.dev ];
-            };
-          packages =
-            nix:
-            pkgs.callPackage ./package.nix {
-              inherit nix;
-              inherit (llvm) stdenv;
-            };
-        };
+        lib.recursiveUpdate
+          (mapAttrValues (lib.flip mapAttrValues nv) {
+            devShells =
+              nix:
+              pkgs.mkShell.override { inherit (llvm) stdenv; } {
+                packages =
+                  (with pkgs; [
+                    boost.dev
+                    meson
+                    ninja
+                    pkg-config
+                  ])
+                  ++ (with llvm; [ clang-tools ])
+                  ++ [ nix.dev ];
+              };
+            packages =
+              nix:
+              pkgs.callPackage ./package.nix {
+                inherit nix;
+                inherit (llvm) stdenv;
+              };
+          })
+          {
+            packages.ec-check = pkgs.runCommand "ec-check" { src = ./.; } ''
+              cd "$src"
+              ${lib.getExe pkgs.editorconfig-checker}
+              touch "$out"
+            '';
+          };
     };
 }

@@ -23,7 +23,7 @@ $ nix --plugin-files ./result/lib/ ast --expr 'let name = "world"; in "Hello, ${
 ```nix
 # In flake.nix
 {
-  inputs.nix-ast.url = "github:thecaralice/nix-ast";
+	inputs.nix-ast.url = "github:thecaralice/nix-ast";
 }
 ```
 ```nix

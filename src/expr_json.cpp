@@ -246,9 +246,14 @@ void to_json(json& j, const WithSymbols<const nix::ExprConcatStrings&>& expr) {
 	j = {
 		{ "kind", "ConcatStrings" },
 		{ "forceString", expr->forceString },
-		{ "strings", expr.map([](auto x) {
-			 return std::ranges::views::transform(*x.es, [](auto&& p) -> nix::Expr* { return p.second; });
-		 }) },
+		{
+			"strings",
+			expr.map([](auto x) {
+				return std::ranges::views::transform(*x.es, [](auto&& p) -> nix::Expr* {
+					return p.second;
+				});
+			}),
+		},
 	};
 }
 

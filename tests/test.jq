@@ -1,5 +1,5 @@
 def assert(cond; msg): if cond | not then error(msg) end;
-def cmp: 
+def cmp:
 	.fst as $fst
 	| .snd as $snd
 	| {fst: [], snd: [], diff: [], uncmp: []}
@@ -13,8 +13,8 @@ def cmp:
 			| .snd += (($snd_keys - $fst_keys) | map([.]))
 			| ($fst_keys - ($fst_keys - $snd_keys)) as $keys
 			| reduce (
-				$keys 
-				| map(. as $key | {fst: $fst.[$key], snd: $snd.[$key]} | cmp | map_values(map([$key] + .))) 
+				$keys
+				| map(. as $key | {fst: $fst.[$key], snd: $snd.[$key]} | cmp | map_values(map([$key] + .)))
 				| .[]
 			) as $cur (
 				.;
