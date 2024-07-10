@@ -4,7 +4,7 @@
 
 ## Requirements
 
-Nix C++ interface is unstable, this is only compatible with Nix versions from 2.18 to 2.20 inclusive.
+Nix C++ interface is unstable, this is only compatible with Nix versions from 2.18 to 2.22 inclusive.
 
 ## Installation
 
