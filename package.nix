@@ -6,11 +6,19 @@
   ninja,
   pkg-config,
   jq,
+  lib,
 }:
 stdenv.mkDerivation {
   pname = "nix-ast";
   version = "0.1.0";
-  src = ./.;
+  src = lib.fileset.toSource {
+    root = ./.;
+    fileset = lib.fileset.unions [
+      ./meson.build
+      ./src
+      ./tests
+    ];
+  };
   buildInputs = [
     nix.dev
     boost.dev
