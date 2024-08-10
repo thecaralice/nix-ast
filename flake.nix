@@ -9,26 +9,16 @@
   };
 
   outputs =
-    {
-      self,
-      flake-parts,
-      nixpkgs,
-      nix-github-actions,
-      ...
-    }@inputs:
+    { flake-parts, nixpkgs, ... }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ ];
+      imports = [
+        ./nix/ec-check.nix
+        ./nix/github-actions.nix
+      ];
       systems = nixpkgs.lib.platforms.all;
-      flake.githubActions = nix-github-actions.lib.mkGithubMatrix {
-        checks = nixpkgs.lib.getAttrs [
-          "x86_64-linux"
-          "x86_64-darwin"
-        ] self.packages;
-      };
       perSystem =
         {
           pkgs,
-          system,
           self',
           lib,
           ...
@@ -52,34 +42,29 @@
           };
           llvm = pkgs.llvmPackages_18;
         in
-        lib.recursiveUpdate
-          (mapAttrValues (lib.flip mapAttrValues nv) {
-            devShells =
-              nix:
-              pkgs.mkShell.override { inherit (llvm) stdenv; } {
-                packages =
-                  (with pkgs; [
-                    boost.dev
-                    meson
-                    ninja
-                    pkg-config
-                  ])
-                  ++ (with llvm; [ clang-tools ])
-                  ++ [ nix.dev ];
-              };
-            packages =
-              nix:
-              pkgs.callPackage ./package.nix {
-                inherit nix;
-                inherit (llvm) stdenv;
-              };
-          })
-          {
-            packages.ec-check = pkgs.runCommand "ec-check" { src = ./.; } ''
-              cd "$src"
-              ${lib.getExe pkgs.editorconfig-checker}
-              touch "$out"
-            '';
-          };
+        mapAttrValues (lib.flip mapAttrValues nv) {
+          devShells =
+            nix:
+            pkgs.mkShell.override { inherit (llvm) stdenv; } {
+              packages =
+                (with pkgs; [
+                  boost.dev
+                  meson
+                  ninja
+                  pkg-config
+                ])
+                ++ (with llvm; [ clang-tools ])
+                ++ [ nix.dev ];
+            };
+          packages =
+            nix:
+            pkgs.callPackage ./package.nix {
+              inherit nix;
+              inherit (llvm) stdenv;
+            };
+        }
+        // {
+          github-actions.checks = self'.packages // self'.checks;
+        };
     };
 }
