@@ -78,11 +78,13 @@
               }
             );
           };
-        }
-        // {
-          githubActions.cachix = {
-            enable = true;
-          };
         };
+      githubActions = {
+        cachix = {
+          enable = true;
+          cacheName = "nix-ast";
+        };
+        checkAllSystems = false;
+      };
     };
 }
