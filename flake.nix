@@ -42,7 +42,7 @@
           };
           llvm = pkgs.llvmPackages_18;
         in
-        mapAttrValues (lib.flip mapAttrValues nv) {
+        mapAttrValues (lib.flip mapAttrValues nv) rec {
           devShells =
             nix:
             pkgs.mkShell.override { inherit (llvm) stdenv; } {
@@ -62,6 +62,16 @@
               inherit nix;
               inherit (llvm) stdenv;
             };
+          apps = nix: {
+            type = "app";
+            program = lib.getExe (pkgs.writeShellApplication {
+              name = "nix-with-ast";
+              runtimeInputs = [nix];
+              text = ''
+                exec nix --plugin-files ${lib.escapeShellArg (packages nix)}/lib/ "$@"
+              '';
+            });
+          };
         }
         // {
           github-actions.checks = self'.packages // self'.checks;
