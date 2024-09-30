@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "flake-gha": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ]
+      },
+      "locked": {
+        "lastModified": 1727720507,
+        "narHash": "sha256-/uEEyl1vMIq2QfyyHiNhxN7djH3JPpTIRlBSc7cMct4=",
+        "owner": "thecaralice",
+        "repo": "flake-gha",
+        "rev": "79b9d853c738956ab7c429ce613f8302d6ac23de",
+        "type": "github"
+      },
+      "original": {
+        "owner": "thecaralice",
+        "repo": "flake-gha",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": "nixpkgs-lib"
@@ -15,26 +35,6 @@
       "original": {
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "type": "github"
-      }
-    },
-    "nix-github-actions": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1720066371,
-        "narHash": "sha256-uPlLYH2S0ACj0IcgaK9Lsf4spmJoGejR9DotXiXSBZQ=",
-        "owner": "nix-community",
-        "repo": "nix-github-actions",
-        "rev": "622f829f5fe69310a866c8a6cd07e747c44ef820",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nix-github-actions",
         "type": "github"
       }
     },
@@ -67,8 +67,8 @@
     },
     "root": {
       "inputs": {
+        "flake-gha": "flake-gha",
         "flake-parts": "flake-parts",
-        "nix-github-actions": "nix-github-actions",
         "nixpkgs": "nixpkgs"
       }
     }

@@ -2,24 +2,28 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nix-github-actions = {
-      url = "github:nix-community/nix-github-actions";
-      inputs.nixpkgs.follows = "nixpkgs";
+    flake-gha.url = "github:thecaralice/flake-gha";
+    flake-gha.inputs = {
+      flake-parts.follows = "flake-parts";
     };
   };
 
   outputs =
-    { flake-parts, nixpkgs, ... }@inputs:
+    {
+      flake-parts,
+      nixpkgs,
+      flake-gha,
+      ...
+    }@inputs:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         ./nix/ec-check.nix
-        ./nix/github-actions.nix
+        flake-gha.flakeModules.default
       ];
       systems = nixpkgs.lib.platforms.all;
       perSystem =
         {
           pkgs,
-          self',
           lib,
           ...
         }:
@@ -64,17 +68,21 @@
             };
           apps = nix: {
             type = "app";
-            program = lib.getExe (pkgs.writeShellApplication {
-              name = "nix-with-ast";
-              runtimeInputs = [nix];
-              text = ''
-                exec nix --plugin-files ${lib.escapeShellArg (packages nix)}/lib/ "$@"
-              '';
-            });
+            program = lib.getExe (
+              pkgs.writeShellApplication {
+                name = "nix-with-ast";
+                runtimeInputs = [ nix ];
+                text = ''
+                  exec nix --plugin-files ${lib.escapeShellArg (packages nix)}/lib/ "$@"
+                '';
+              }
+            );
           };
         }
         // {
-          github-actions.checks = self'.packages // self'.checks;
+          githubActions.cachix = {
+            enable = true;
+          };
         };
     };
 }
