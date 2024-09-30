@@ -25,6 +25,7 @@
         {
           pkgs,
           lib,
+          self',
           ...
         }:
         let
@@ -78,6 +79,9 @@
               }
             );
           };
+        }
+        // {
+          githubActions.cachix.pathsToPush = lib.attrValues self'.packages;
         };
       githubActions = {
         cachix = {
